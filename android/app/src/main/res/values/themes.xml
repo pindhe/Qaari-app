@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.Qaari" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/green_dark</item>
+        <item name="android:navigationBarColor">@color/cream</item>
+        <item name="android:windowBackground">@color/cream</item>
+    </style>
+</resources>
