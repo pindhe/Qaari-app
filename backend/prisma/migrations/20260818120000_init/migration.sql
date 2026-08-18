@@ -61,6 +61,8 @@ CREATE UNIQUE INDEX "users_phone_key" ON "users"("phone");
 CREATE INDEX "qaaris_name_idx" ON "qaaris"("name");
 CREATE UNIQUE INDEX "recordings_qaari_id_juz_number_key" ON "recordings"("qaari_id", "juz_number");
 CREATE INDEX "favorites_user_id_idx" ON "favorites"("user_id");
+CREATE UNIQUE INDEX "favorites_user_qaari_only" ON "favorites"("user_id", "qaari_id") WHERE "juz_number" IS NULL;
+CREATE UNIQUE INDEX "favorites_user_qaari_juz" ON "favorites"("user_id", "qaari_id", "juz_number") WHERE "juz_number" IS NOT NULL;
 
 -- AddForeignKey
 ALTER TABLE "qaaris" ADD CONSTRAINT "qaaris_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

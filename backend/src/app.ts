@@ -31,6 +31,10 @@ export function createApp() {
   app.use("/favorites", favoriteRoutes);
   app.use("/admin", adminRoutes);
 
+  app.use((_req, res) => {
+    res.status(404).json({ error: "Jidkan lama helin", code: "NOT_FOUND" });
+  });
+
   app.use(errorHandler);
   return app;
 }
