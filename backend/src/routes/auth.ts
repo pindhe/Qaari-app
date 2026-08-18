@@ -86,10 +86,38 @@ router.post("/login", async (req, res) => {
     throw new HttpError(401, "Email/taleefan ama erayga sirta ah waa khalad", "INVALID_CREDENTIALS");
   }
 
+  if (user.role === "admin") {
+    throw new HttpError(403, "Akoonkan waa mid maamule; isticmaal guddiga maamulka", "ADMIN_ONLY");
+  }
+
   const withStreak = await applyStreak(user);
   res.json({
     token: signToken({ sub: user.id, role: user.role }),
     user: publicUser(withStreak),
+  });
+});
+
+router.post("/admin-login", async (req, res) => {
+  const { identifier, password } = loginSchema.parse(req.body);
+  const value = identifier.includes("@") ? identifier.toLowerCase() : identifier.replace(/[\s-]/g, "");
+
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [{ email: value }, { phone: value }],
+    },
+  });
+
+  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+    throw new HttpError(401, "Email ama erayga sirta ah waa khalad", "INVALID_CREDENTIALS");
+  }
+
+  if (user.role !== "admin") {
+    throw new HttpError(403, "Akoonkan ma aha mid maamule", "FORBIDDEN");
+  }
+
+  res.json({
+    token: signToken({ sub: user.id, role: user.role }),
+    user: publicUser(user),
   });
 });
 

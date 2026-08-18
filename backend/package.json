@@ -2,6 +2,7 @@
   "name": "qaari-api",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "description": "Shared API for the Qaari app and Ministry admin panel",
   "scripts": {
     "dev": "tsx watch src/index.ts",
