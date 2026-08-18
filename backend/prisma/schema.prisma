@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  user
+}
+
+model User {
+  id            String      @id @default(cuid())
+  name          String
+  email         String?     @unique
+  phone         String?     @unique
+  passwordHash  String      @map("password_hash")
+  role          Role        @default(user)
+  streakCount   Int         @default(0) @map("streak_count")
+  lastLoginDate DateTime?   @map("last_login_date") @db.Date
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  qaarisCreated Qaari[]     @relation("CreatedBy")
+  favorites     Favorite[]
+
+  @@map("users")
+}
+
+model Qaari {
+  id          String      @id @default(cuid())
+  name        String
+  bio         String      @db.Text
+  photoUrl    String?     @map("photo_url")
+  createdById String      @map("created_by")
+  createdBy   User        @relation("CreatedBy", fields: [createdById], references: [id])
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  recordings  Recording[]
+  favorites   Favorite[]
+
+  @@index([name])
+  @@map("qaaris")
+}
+
+model Recording {
+  id              String     @id @default(cuid())
+  qaariId         String     @map("qaari_id")
+  qaari           Qaari      @relation(fields: [qaariId], references: [id], onDelete: Cascade)
+  juzNumber       Int        @map("juz_number")
+  audioUrl        String     @map("audio_url")
+  durationSeconds Int?       @map("duration_seconds")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+  favorites       Favorite[]
+
+  @@unique([qaariId, juzNumber])
+  @@map("recordings")
+}
+
+model Favorite {
+  id          String     @id @default(cuid())
+  userId      String     @map("user_id")
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  qaariId     String     @map("qaari_id")
+  qaari       Qaari      @relation(fields: [qaariId], references: [id], onDelete: Cascade)
+  juzNumber   Int?       @map("juz_number")
+  recordingId String?    @map("recording_id")
+  recording   Recording? @relation(fields: [recordingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("favorites")
+}

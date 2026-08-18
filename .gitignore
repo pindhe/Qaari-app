@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build
+dist/
+build/
+*.tsbuildinfo
+
+# Uploads (audio & photos)
+backend/uploads/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# iOS
+ios/Qaari.xcodeproj/xcuserdata/
+ios/Qaari.xcodeproj/project.xcworkspace/xcuserdata/
+DerivedData/
+*.xcuserstate
+
+# Android
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+android/.cxx/
+*.iml
+*.apk
+*.aab
+
+# Logs
+*.log
+npm-debug.log*
+
+# Misc
+coverage/
+.cache/

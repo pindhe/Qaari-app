@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: qaari-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: qaari
+      POSTGRES_PASSWORD: qaari
+      POSTGRES_DB: qaari
+    ports:
+      - "5432:5432"
+    volumes:
+      - qaari_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U qaari -d qaari"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  qaari_pg_data:
