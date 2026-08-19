@@ -39,13 +39,13 @@ struct HomeView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Wasaaradda Warfaafinta")
+            Text("Ministry of Information")
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Theme.greenDark)
-            Text("Dhageyso Qur'aanka kariimka ah")
+            Text("Listen to the Holy Quran")
                 .font(.title2.weight(.bold))
             if let streak = auth.user?.streakCount, auth.isLoggedIn {
-                Text("Taxane: \(streak) maalmood")
+                Text("Streak: \(streak) days")
                     .font(.headline)
                     .foregroundStyle(Theme.gold)
             }

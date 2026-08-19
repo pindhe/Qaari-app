@@ -6,13 +6,13 @@ struct RootView: View {
     var body: some View {
         TabView {
             HomeView()
-                .tabItem { Label("Guriga", systemImage: "house.fill") }
+                .tabItem { Label("Home", systemImage: "house.fill") }
             SearchView()
-                .tabItem { Label("Raadi", systemImage: "magnifyingglass") }
+                .tabItem { Label("Search", systemImage: "magnifyingglass") }
             FavoritesView()
-                .tabItem { Label("Jecel", systemImage: "heart.fill") }
+                .tabItem { Label("Favorites", systemImage: "heart.fill") }
             ProfileView()
-                .tabItem { Label("Akoon", systemImage: "person.fill") }
+                .tabItem { Label("Account", systemImage: "person.fill") }
         }
         .sheet(isPresented: $auth.showLogin) {
             LoginView()

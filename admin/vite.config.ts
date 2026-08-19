@@ -9,7 +9,6 @@ export default defineConfig({
       "/auth": "http://localhost:4000",
       "/admin": "http://localhost:4000",
       "/media": "http://localhost:4000",
-      "/qaaris": "http://localhost:4000",
       "/health": "http://localhost:4000",
     },
   },

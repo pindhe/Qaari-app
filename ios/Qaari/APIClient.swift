@@ -22,7 +22,7 @@ actor APIClient {
         if let token { req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization") }
         let (_, response) = try await URLSession.shared.data(for: req)
         guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-            throw APIError(message: "Khalad ayaa dhacay", code: nil)
+            throw APIError(message: "Something went wrong", code: nil)
         }
     }
 
@@ -53,14 +53,14 @@ actor APIClient {
         }
         let (data, response) = try await URLSession.shared.data(for: req)
         guard let http = response as? HTTPURLResponse else {
-            throw APIError(message: "Isku xirka wuu fashilmay", code: nil)
+            throw APIError(message: "Connection failed", code: nil)
         }
         if !(200..<300).contains(http.statusCode) {
             if let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                let message = obj["error"] as? String {
                 throw APIError(message: message, code: obj["code"] as? String)
             }
-            throw APIError(message: "Khalad ayaa dhacay", code: nil)
+            throw APIError(message: "Something went wrong", code: nil)
         }
         return try decoder.decode(T.self, from: data)
     }

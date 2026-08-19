@@ -10,7 +10,7 @@ struct SearchView: View {
             List {
                 if let result {
                     if !result.qaaris.isEmpty {
-                        Section("Qaariyada") {
+                        Section("Reciters") {
                             ForEach(result.qaaris) { qaari in
                                 NavigationLink(value: qaari.id) {
                                     Text(qaari.name)
@@ -43,15 +43,15 @@ struct SearchView: View {
                         }
                     }
                     if result.qaaris.isEmpty && result.juzMatches.isEmpty && !query.isEmpty {
-                        Text("Waxba lama helin")
+                        Text("No results")
                     }
                 }
             }
-            .navigationTitle("Raadi")
+            .navigationTitle("Search")
             .navigationDestination(for: String.self) { id in
                 QaariProfileView(qaariId: id)
             }
-            .searchable(text: $query, prompt: "Magaca Qaari ama lambarka Juz")
+            .searchable(text: $query, prompt: "Reciter name or Juz number")
             .onChange(of: query) { _, value in
                 Task { await search(value) }
             }

@@ -58,28 +58,28 @@ function writeSilentWav(filename: string, seconds = 3) {
 const qaarisSeed = [
   {
     name: "Sheekh Maxamed Xasan Ciise",
-    bio: "Qaari caan ka ah Hargeysa. Wuxuu ku caanbaxay qiraad deggan oo cad, waxaana Wasaaradda Warfaafintu u aqoonsatay inuu yahay mid ka mid ah qaariyada rasmiga ah ee Somaliland.",
+    bio: "A well-known reciter from Hargeisa. His recitation is clear and measured, and the Ministry of Information recognizes him as one of Somaliland’s official qaaris.",
     initials: "MX",
     color: "#0B7A3E",
     juz: 30,
   },
   {
     name: "Sheekh Cabdiraxmaan Jaamac",
-    bio: "Wuxuu ka soo jeedaa Burco. Qiraadkiisu wuxuu caan ku yahay tartiib iyo dhawaaq nadiif ah, waxaana si weyn looga dhageystaa gobollada Togdheer iyo Maroodi Jeex.",
+    bio: "From Burao. His recitation is known for a calm pace and a clean voice, and is widely listened to in Togdheer and Maroodi Jeex.",
     initials: "CJ",
     color: "#065028",
     juz: 18,
   },
   {
     name: "Sheekh Cali Axmed Nuur",
-    bio: "Qaari ka tirsan Boorama. Wuxuu ku takhasusay qiraadka warshaan ee dadweynaha loogu talagalay, iyadoo la dhowrayao habka rasmiga ah ee Wasaaradda.",
+    bio: "A reciter from Borama. He specializes in broadcast-style recitation for the public, following the Ministry’s official approach.",
     initials: "CN",
     color: "#1F6B4A",
     juz: 7,
   },
   {
     name: "Sheekh Cismaan Cabdi Xirsi",
-    bio: "Wuxuu ku nool yahay Berbera. Qiraad cusub oo hadda lagu darayo maktabadda Qaari; qayb ka mid ah 30-ka Juz ayaa weli la soo gelinayaa.",
+    bio: "Based in Berbera. A newer reciter being added to the Qaari library; some of the 30 Juz are still being uploaded.",
     initials: "CX",
     color: "#0E4D31",
     juz: 3,
@@ -105,7 +105,7 @@ async function main() {
   ensureDirs();
   const email = process.env.ADMIN_EMAIL ?? "admin@moin.govsomaliland.org";
   const password = process.env.ADMIN_PASSWORD ?? "ChangeMeNow!";
-  const name = process.env.ADMIN_NAME ?? "Wasaarada Warfaafinta";
+  const name = process.env.ADMIN_NAME ?? "Ministry of Information";
   const passwordHash = await bcrypt.hash(password, 12);
 
   const admin = await prisma.user.upsert({

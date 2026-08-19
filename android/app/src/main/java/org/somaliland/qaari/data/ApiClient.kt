@@ -64,7 +64,7 @@ object ApiClient {
             if (!response.isSuccessful) {
                 val message = runCatching {
                     json.parseToJsonElement(text).jsonObject["error"]?.jsonPrimitive?.content
-                }.getOrNull() ?: "Khalad ayaa dhacay"
+                }.getOrNull() ?: "Something went wrong"
                 throw ApiException(message)
             }
             if (text.isBlank()) return decode("{}")

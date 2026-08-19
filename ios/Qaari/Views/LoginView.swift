@@ -14,27 +14,27 @@ struct LoginView: View {
         NavigationStack {
             Form {
                 if isRegister {
-                    TextField("Magaca", text: $name)
+                    TextField("Name", text: $name)
                 }
-                TextField("Email ama taleefan", text: $identifier)
+                TextField("Email or phone", text: $identifier)
                     .textInputAutocapitalization(.never)
                     .keyboardType(.emailAddress)
-                SecureField("Erayga sirta", text: $password)
+                SecureField("Password", text: $password)
                 if let error {
                     Text(error).foregroundStyle(Theme.red)
                 }
-                Button(isRegister ? "Isdiiwaangeli" : "Gal") {
+                Button(isRegister ? "Sign up" : "Sign in") {
                     Task { await submit() }
                 }
                 .disabled(loading)
-                Button(isRegister ? "Horey u leedahay akoon? Gal" : "Akoon ma lihid? Isdiiwaangeli") {
+                Button(isRegister ? "Already have an account? Sign in" : "No account? Sign up") {
                     isRegister.toggle()
                 }
             }
-            .navigationTitle(isRegister ? "Isdiiwaangeli" : "Gal")
+            .navigationTitle(isRegister ? "Sign up" : "Sign in")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Xir") { dismiss() }
+                    Button("Close") { dismiss() }
                 }
             }
         }

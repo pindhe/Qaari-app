@@ -81,7 +81,7 @@ router.get("/:id", optionalAuth, async (req: AuthedRequest, res) => {
   });
 
   if (!qaari) {
-    throw new HttpError(404, "Qaariga lama helin", "NOT_FOUND");
+    throw new HttpError(404, "Reciter not found", "NOT_FOUND");
   }
 
   let favoriteIds = new Set<string>();
@@ -99,7 +99,7 @@ router.get("/:id", optionalAuth, async (req: AuthedRequest, res) => {
 router.get("/:id/juz/:number", async (req, res) => {
   const number = Number(param(req.params.number));
   if (!Number.isInteger(number) || number < 1 || number > 30) {
-    throw new HttpError(400, "Lambarka Juz waa inuu noqdaa 1 ilaa 30", "INVALID_JUZ");
+    throw new HttpError(400, "Juz number must be between 1 and 30", "INVALID_JUZ");
   }
 
   const recording = await prisma.recording.findUnique({
@@ -115,7 +115,7 @@ router.get("/:id/juz/:number", async (req, res) => {
   });
 
   if (!recording) {
-    throw new HttpError(404, "Dhageysiga Juz-kan lama helin", "NOT_FOUND");
+    throw new HttpError(404, "This Juz recording was not found", "NOT_FOUND");
   }
 
   res.json({

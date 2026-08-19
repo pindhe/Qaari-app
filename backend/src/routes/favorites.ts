@@ -46,7 +46,7 @@ router.post("/", async (req: AuthedRequest, res) => {
 
   const qaari = await prisma.qaari.findUnique({ where: { id: body.qaariId } });
   if (!qaari) {
-    throw new HttpError(404, "Qaariga lama helin", "NOT_FOUND");
+    throw new HttpError(404, "Reciter not found", "NOT_FOUND");
   }
 
   let recordingId: string | null = null;
@@ -57,7 +57,7 @@ router.post("/", async (req: AuthedRequest, res) => {
       },
     });
     if (!recording) {
-      throw new HttpError(404, "Dhageysiga Juz-kan lama helin", "NOT_FOUND");
+      throw new HttpError(404, "This Juz recording was not found", "NOT_FOUND");
     }
     recordingId = recording.id;
   }
@@ -102,7 +102,7 @@ router.post("/", async (req: AuthedRequest, res) => {
 router.delete("/:id", async (req: AuthedRequest, res) => {
   const favorite = await prisma.favorite.findUnique({ where: { id: param(req.params.id) } });
   if (!favorite || favorite.userId !== req.user!.id) {
-    throw new HttpError(404, "Ma jiro wax la jecelyahay", "NOT_FOUND");
+    throw new HttpError(404, "Favorite not found", "NOT_FOUND");
   }
   await prisma.favorite.delete({ where: { id: favorite.id } });
   res.status(204).send();

@@ -24,7 +24,7 @@ struct QaariProfileView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             Text(detail.name).font(.title2.bold())
                             Text(detail.bio).font(.subheadline).foregroundStyle(.secondary)
-                            Button(detail.isFavorite || favoriteId != nil ? "Ka saar jecel" : "Ku dar jecel") {
+                            Button(detail.isFavorite || favoriteId != nil ? "Remove favorite" : "Add favorite") {
                                 Task { await toggleFavorite(qaariOnly: true) }
                             }
                             .buttonStyle(.borderedProminent)
@@ -36,7 +36,7 @@ struct QaariProfileView: View {
                         HStack {
                             VStack(alignment: .leading) {
                                 Text("Juz \(juz.juzNumber)").font(.headline)
-                                Text(juz.available ? duration(juz.durationSeconds) : "Weli lama soo gelin")
+                                Text(juz.available ? duration(juz.durationSeconds) : "Not uploaded yet")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
@@ -75,7 +75,7 @@ struct QaariProfileView: View {
     }
 
     private func duration(_ seconds: Int?) -> String {
-        guard let seconds else { return "Diyaar" }
+        guard let seconds else { return "Ready" }
         return "\(seconds / 60):\(String(format: "%02d", seconds % 60))"
     }
 

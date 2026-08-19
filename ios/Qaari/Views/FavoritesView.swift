@@ -10,16 +10,16 @@ struct FavoritesView: View {
             Group {
                 if !auth.isLoggedIn {
                     ContentUnavailableView {
-                        Label("Gal si aad u kaydiso", systemImage: "heart")
+                        Label("Sign in to save favorites", systemImage: "heart")
                     } description: {
-                        Text("Jecelka waxaa loogu talagalay dadka akoon leh.")
+                        Text("Favorites are available for registered users.")
                     } actions: {
-                        Button("Gal / Isdiiwaangeli") { auth.requireLogin() }
+                        Button("Sign in / Sign up") { auth.requireLogin() }
                             .buttonStyle(.borderedProminent)
                             .tint(Theme.green)
                     }
                 } else if items.isEmpty {
-                    ContentUnavailableView("Weli ma jiraan kuwa la jecelyahay", systemImage: "heart")
+                    ContentUnavailableView("No favorites yet", systemImage: "heart")
                 } else {
                     List(items) { item in
                         HStack {
@@ -51,7 +51,7 @@ struct FavoritesView: View {
                     }
                 }
             }
-            .navigationTitle("Kuwa la jecelyahay")
+            .navigationTitle("Favorites")
             .task { await load() }
             .onChange(of: auth.isLoggedIn) { _, _ in
                 Task { await load() }

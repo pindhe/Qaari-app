@@ -24,7 +24,7 @@ const registerSchema = z
     password: z.string().min(6).max(100),
   })
   .refine((data) => Boolean(data.email || data.phone), {
-    message: "Email ama taleefan ayaa loo baahan yahay",
+    message: "Email or phone is required",
     path: ["email"],
   });
 
@@ -52,7 +52,7 @@ router.post("/register", async (req, res) => {
   });
 
   if (existing) {
-    throw new HttpError(409, "Akoon horay u jira ayaa ku xiran", "CONFLICT");
+    throw new HttpError(409, "An account already exists for this email or phone", "CONFLICT");
   }
 
   const user = await prisma.user.create({
@@ -83,11 +83,11 @@ router.post("/login", async (req, res) => {
   });
 
   if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
-    throw new HttpError(401, "Email/taleefan ama erayga sirta ah waa khalad", "INVALID_CREDENTIALS");
+    throw new HttpError(401, "Incorrect email/phone or password", "INVALID_CREDENTIALS");
   }
 
   if (user.role === "admin") {
-    throw new HttpError(403, "Akoonkan waa mid maamule; isticmaal guddiga maamulka", "ADMIN_ONLY");
+    throw new HttpError(403, "This is a staff account. Use the admin panel instead.", "ADMIN_ONLY");
   }
 
   const withStreak = await applyStreak(user);
@@ -108,11 +108,11 @@ router.post("/admin-login", async (req, res) => {
   });
 
   if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
-    throw new HttpError(401, "Email ama erayga sirta ah waa khalad", "INVALID_CREDENTIALS");
+    throw new HttpError(401, "Incorrect email or password", "INVALID_CREDENTIALS");
   }
 
   if (user.role !== "admin") {
-    throw new HttpError(403, "Akoonkan ma aha mid maamule", "FORBIDDEN");
+    throw new HttpError(403, "This account is not an administrator", "FORBIDDEN");
   }
 
   res.json({

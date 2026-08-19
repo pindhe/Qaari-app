@@ -101,10 +101,10 @@ fun QaariApp(vm: AppViewModel = viewModel()) {
             Column {
                 if (current != null) PlayerBar(player)
                 NavigationBar {
-                    NavigationBarItem(tab == 0, { tab = 0; nav.navigate("home") { launchSingleTop = true } }, icon = { Icon(Icons.Default.Home, null) }, label = { Text("Guriga") })
-                    NavigationBarItem(tab == 1, { tab = 1; nav.navigate("search") { launchSingleTop = true } }, icon = { Icon(Icons.Default.Search, null) }, label = { Text("Raadi") })
-                    NavigationBarItem(tab == 2, { tab = 2; nav.navigate("favorites") { launchSingleTop = true } }, icon = { Icon(Icons.Default.Favorite, null) }, label = { Text("Jecel") })
-                    NavigationBarItem(tab == 3, { tab = 3; nav.navigate("profile") { launchSingleTop = true } }, icon = { Icon(Icons.Default.Person, null) }, label = { Text("Akoon") })
+                    NavigationBarItem(tab == 0, { tab = 0; nav.navigate("home") { launchSingleTop = true } }, icon = { Icon(Icons.Default.Home, null) }, label = { Text("Home") })
+                    NavigationBarItem(tab == 1, { tab = 1; nav.navigate("search") { launchSingleTop = true } }, icon = { Icon(Icons.Default.Search, null) }, label = { Text("Search") })
+                    NavigationBarItem(tab == 2, { tab = 2; nav.navigate("favorites") { launchSingleTop = true } }, icon = { Icon(Icons.Default.Favorite, null) }, label = { Text("Favorites") })
+                    NavigationBarItem(tab == 3, { tab = 3; nav.navigate("profile") { launchSingleTop = true } }, icon = { Icon(Icons.Default.Person, null) }, label = { Text("Account") })
                 }
             }
         },
@@ -154,9 +154,9 @@ private fun HomeScreen(session: SessionStore, open: (String) -> Unit) {
     }
 
     Column(Modifier.fillMaxSize().padding(16.dp)) {
-        Text("Wasaaradda Warfaafinta", color = GreenDark, fontWeight = FontWeight.SemiBold)
-        Text("Dhageyso Qur'aanka kariimka ah", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-        if (user != null) Text("Taxane: ${user!!.streakCount} maalmood", color = Gold, fontWeight = FontWeight.Bold)
+        Text("Ministry of Information", color = GreenDark, fontWeight = FontWeight.SemiBold)
+        Text("Listen to the Holy Quran", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        if (user != null) Text("Streak: ${user!!.streakCount} days", color = Gold, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(12.dp))
         if (loading) CircularProgressIndicator()
         error?.let { Text(it, color = Red) }
@@ -209,7 +209,7 @@ private fun QaariScreen(id: String, session: SessionStore, player: PlayerControl
                 else scope.launch {
                     ApiClient.post("/favorites", token, """{"qaariId":"$id"}""") { it }
                 }
-            }) { Text(if (q.isFavorite) "Waa la jecel yahay" else "Ku dar jecel") }
+            }) { Text(if (q.isFavorite) "Favorited" else "Add favorite") }
         }
         items(q.juz) { juz ->
             Row(
@@ -218,12 +218,12 @@ private fun QaariScreen(id: String, session: SessionStore, player: PlayerControl
             ) {
                 Column(Modifier.weight(1f)) {
                     Text("Juz ${juz.juzNumber}", fontWeight = FontWeight.Bold)
-                    Text(if (juz.available) "Diyaar" else "Lama soo gelin", color = androidx.compose.ui.graphics.Color.Gray)
+                    Text(if (juz.available) "Ready" else "Not uploaded", color = androidx.compose.ui.graphics.Color.Gray)
                 }
                 if (juz.available) {
                     Icon(
                         Icons.Default.PlayArrow,
-                        contentDescription = "Dhageyso",
+                        contentDescription = "Play",
                         modifier = Modifier.size(36.dp).clickable {
                             scope.launch {
                                 val rec = ApiClient.get("/qaaris/$id/juz/${juz.juzNumber}") {
@@ -255,7 +255,7 @@ private fun SearchScreen(player: PlayerController, open: (String) -> Unit) {
         }.getOrNull()
     }
     Column(Modifier.padding(16.dp)) {
-        OutlinedTextField(q, { q = it }, label = { Text("Magaca Qaari ama lambarka Juz") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(q, { q = it }, label = { Text("Reciter name or Juz number") }, modifier = Modifier.fillMaxWidth())
         LazyColumn {
             result?.qaaris?.let { list ->
                 items(list, key = { it.id }) { item ->
@@ -296,8 +296,8 @@ private fun FavoritesScreen(session: SessionStore, player: PlayerController, ope
     }
     if (token == null) {
         Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center) {
-            Text("Gal si aad u kaydiso kuwa aad jeceshahay.")
-            Button(onClick = { session.requireLogin() }) { Text("Gal / Isdiiwaangeli") }
+            Text("Sign in to save favorites.")
+            Button(onClick = { session.requireLogin() }) { Text("Sign in / Sign up") }
         }
         return
     }
@@ -329,17 +329,17 @@ private fun ProfileScreen(session: SessionStore) {
     val scope = rememberCoroutineScope()
     Column(Modifier.padding(24.dp)) {
         if (user == null) {
-            Text("Marti ayaad tahay.")
-            Button(onClick = { session.requireLogin() }) { Text("Gal / Isdiiwaangeli") }
+            Text("You are browsing as a guest.")
+            Button(onClick = { session.requireLogin() }) { Text("Sign in / Sign up") }
         } else {
             Text(user!!.name, fontSize = 26.sp, fontWeight = FontWeight.Bold)
             Text(user!!.email ?: user!!.phone.orEmpty())
             Text("${user!!.streakCount}", fontSize = 40.sp, color = Gold, fontWeight = FontWeight.Bold)
-            Text("maalmood oo taxane ah")
-            TextButton(onClick = { scope.launch { session.logout() } }) { Text("Ka bax", color = Red) }
+            Text("day streak")
+            TextButton(onClick = { scope.launch { session.logout() } }) { Text("Sign out", color = Red) }
         }
         Spacer(Modifier.height(24.dp))
-        Text("Wasaaradda Warfaafinta, Dhaqanka iyo Wacyigelinta · Jamhuuriyadda Somaliland")
+        Text("Ministry of Information, Culture and National Guidance · Republic of Somaliland")
     }
 }
 
@@ -354,10 +354,10 @@ private fun LoginSheet(session: SessionStore, onDismiss: () -> Unit) {
     val scope = rememberCoroutineScope()
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text(if (register) "Isdiiwaangeli" else "Gal", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-            if (register) OutlinedTextField(name, { name = it }, label = { Text("Magaca") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(identifier, { identifier = it }, label = { Text("Email ama taleefan") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(password, { password = it }, label = { Text("Erayga sirta") }, modifier = Modifier.fillMaxWidth())
+            Text(if (register) "Sign up" else "Sign in", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            if (register) OutlinedTextField(name, { name = it }, label = { Text("Name") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(identifier, { identifier = it }, label = { Text("Email or phone") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(password, { password = it }, label = { Text("Password") }, modifier = Modifier.fillMaxWidth())
             error?.let { Text(it, color = Red) }
             Button(onClick = {
                 scope.launch {
@@ -365,9 +365,9 @@ private fun LoginSheet(session: SessionStore, onDismiss: () -> Unit) {
                         if (register) session.register(name, identifier, password) else session.login(identifier, password)
                     }.onFailure { error = it.message }
                 }
-            }, modifier = Modifier.fillMaxWidth()) { Text(if (register) "Isdiiwaangeli" else "Gal") }
+            }, modifier = Modifier.fillMaxWidth()) { Text(if (register) "Sign up" else "Sign in") }
             TextButton(onClick = { register = !register }) {
-                Text(if (register) "Horey u leedahay akoon? Gal" else "Akoon ma lihid? Isdiiwaangeli")
+                Text(if (register) "Already have an account? Sign in" else "No account? Sign up")
             }
         }
     }

@@ -1,6 +1,6 @@
 # Qaari
 
-Native Quran recitation apps for **Wasaaradda Warfaafinta, Dhaqanka iyo Wacyigelinta** (Ministry of Information, Culture and National Guidance, Republic of Somaliland). Listeners browse verified Somaliland qaaris, stream each of the 30 Juz, and — after creating an account — save favorites and keep a daily streak.
+Native Quran recitation apps for the **Ministry of Information, Culture and National Guidance** (Republic of Somaliland). Listeners browse verified Somaliland qaaris, stream each of the 30 Juz, and — after creating an account — save favorites and keep a daily streak.
 
 The product is four pieces that share one API:
 
@@ -111,9 +111,9 @@ Playback uses Media3 ExoPlayer with a `MediaSessionService` so audio continues i
 - Replace `JWT_SECRET` and `ADMIN_PASSWORD`.
 - Put PostgreSQL and object storage (S3, Backblaze B2, or Firebase Storage) behind `PUBLIC_BASE_URL`.
 - Serve the admin panel only on an internal/VPN host; never ship admin routes in the mobile clients.
-- UI copy is Somali-first. Branding uses Somaliland flag green / white / red.
+- UI copy is English. Branding uses Somaliland flag green / white / red.
 - Offline Juz download is intentionally left as phase 2.
 
 ## License / ownership
 
-Built for Wasaaradda Warfaafinta, Jamhuuriyadda Somaliland.
+Built for the Ministry of Information, Republic of Somaliland.

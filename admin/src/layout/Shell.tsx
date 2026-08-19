@@ -61,26 +61,42 @@ export default function Shell() {
           </div>
         </div>
 
-        <p className="sidebar-kicker">Admin menu</p>
+        <p className="sidebar-kicker">Main</p>
         <nav className="nav" onClick={() => setOpen(false)}>
           <NavLink to="/" end>
             <Icon d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5Z" />
             Dashboard
           </NavLink>
-          <NavLink to="/qaaris/new">
-            <Icon d="M12 5v14M5 12h14" />
-            New reciter
+          <NavLink to="/qaaris">
+            <Icon d="M8 7h13M8 12h13M8 17h13M4 7h.01M4 12h.01M4 17h.01" />
+            Qaari
+          </NavLink>
+        </nav>
+
+        <p className="sidebar-kicker">Insights</p>
+        <nav className="nav" onClick={() => setOpen(false)}>
+          <NavLink to="/analytics">
+            <Icon d="M4 19V5M4 19h16M8 16v-5M12 16V8M16 16v-8" />
+            Analytics
+          </NavLink>
+          <NavLink to="/reports">
+            <Icon d="M7 3h8l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z M15 3v6h6" />
+            Reports
+          </NavLink>
+        </nav>
+
+        <p className="sidebar-kicker">System</p>
+        <nav className="nav" onClick={() => setOpen(false)}>
+          <NavLink to="/settings">
+            <Icon d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z M19.4 15a7.7 7.7 0 0 0 .1-1.5 7.7 7.7 0 0 0-.1-1.5l2-1.5-2-3.5-2.4.5a7 7 0 0 0-2.6-1.5L14 2h-4l-.4 2.5A7 7 0 0 0 7 6L4.6 5.5l-2 3.5 2 1.5a7.7 7.7 0 0 0-.1 1.5 7.7 7.7 0 0 0 .1 1.5l-2 1.5 2 3.5 2.4-.5a7 7 0 0 0 2.6 1.5L10 22h4l.4-2.5a7 7 0 0 0 2.6-1.5l2.4.5 2-3.5-2-1.5Z" />
+            Settings
           </NavLink>
         </nav>
 
         <div className="sidebar-foot">
           <button type="button" className="side-btn primary" onClick={() => go("/qaaris/new")}>
             <Icon d="M12 5v14M5 12h14" />
-            Add reciter
-          </button>
-          <button type="button" className="side-btn ghost" onClick={() => window.location.reload()}>
-            <Icon d="M21 12a9 9 0 1 1-3.2-6.9M21 3v6h-6" />
-            Refresh
+            Add new Qaari
           </button>
 
           <div className="who-card">

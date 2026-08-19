@@ -16,7 +16,7 @@ export const config = {
   jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? "30d",
   publicBaseUrl: (process.env.PUBLIC_BASE_URL ?? "http://localhost:4000").replace(/\/$/, ""),
   admin: {
-    name: process.env.ADMIN_NAME ?? "Wasaarada Warfaafinta",
+    name: process.env.ADMIN_NAME ?? "Ministry of Information",
     email: process.env.ADMIN_EMAIL ?? "admin@moin.govsomaliland.org",
     password: process.env.ADMIN_PASSWORD ?? "ChangeMeNow!",
   },

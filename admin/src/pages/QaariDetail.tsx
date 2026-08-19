@@ -73,7 +73,7 @@ export default function QaariDetail() {
   if (!qaari) {
     return (
       <div>
-        <Link className="crumb" to="/">
+        <Link className="crumb" to="/qaaris">
           ← Dashboard
         </Link>
         <p>{error || "Loading live data..."}</p>
@@ -85,7 +85,7 @@ export default function QaariDetail() {
 
   return (
     <>
-      <Link className="crumb" to="/">
+      <Link className="crumb" to="/qaaris">
         ← Reciters
       </Link>
       <section className="card profile-hero">

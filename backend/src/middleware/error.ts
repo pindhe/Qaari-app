@@ -37,5 +37,5 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
   }
 
   console.error(err);
-  res.status(500).json({ error: "Khalad server ah ayaa dhacay", code: "INTERNAL" });
+  res.status(500).json({ error: "An internal server error occurred", code: "INTERNAL" });
 }

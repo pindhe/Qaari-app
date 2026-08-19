@@ -47,8 +47,8 @@ export default function QaariForm() {
 
   return (
     <>
-      <Link className="crumb" to="/">
-        ← Back to dashboard
+      <Link className="crumb" to="/qaaris">
+        ← Back to Qaari list
       </Link>
       <div className="page-head">
         <div>

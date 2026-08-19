@@ -45,16 +45,16 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     if (file.fieldname === "photo") {
       if (!photoMimes.has(file.mimetype)) {
-        cb(new HttpError(400, "Sawirka waa inuu noqdaa JPG, PNG ama WEBP"));
+        cb(new HttpError(400, "Photo must be JPG, PNG, or WEBP"));
         return;
       }
       if (file.size && file.size > config.limits.photoMb * 1024 * 1024) {
-        cb(new HttpError(400, "Sawirka waa weyn yahay"));
+        cb(new HttpError(400, "The photo is too large"));
         return;
       }
     } else if (file.fieldname === "audio") {
       if (!audioMimes.has(file.mimetype)) {
-        cb(new HttpError(400, "Codka waa inuu noqdaa MP3, AAC ama M4A"));
+        cb(new HttpError(400, "Audio must be MP3, AAC, or M4A"));
         return;
       }
     }
@@ -95,7 +95,7 @@ router.get("/qaaris/:id", async (req, res) => {
       recordings: { select: { id: true, juzNumber: true, durationSeconds: true, audioUrl: true } },
     },
   });
-  if (!qaari) throw new HttpError(404, "Qaariga lama helin", "NOT_FOUND");
+  if (!qaari) throw new HttpError(404, "Reciter not found", "NOT_FOUND");
   res.json({
     qaari: {
       id: qaari.id,
@@ -129,7 +129,7 @@ router.post("/qaaris", upload.single("photo"), async (req: AuthedRequest, res) =
 
 router.put("/qaaris/:id", upload.single("photo"), async (req, res) => {
   const existing = await prisma.qaari.findUnique({ where: { id: param(req.params.id) } });
-  if (!existing) throw new HttpError(404, "Qaariga lama helin", "NOT_FOUND");
+  if (!existing) throw new HttpError(404, "Reciter not found", "NOT_FOUND");
 
   const body = qaariBody.parse({
     name: req.body.name ?? existing.name,
@@ -157,7 +157,7 @@ router.delete("/qaaris/:id", async (req, res) => {
     where: { id: param(req.params.id) },
     include: { recordings: true },
   });
-  if (!existing) throw new HttpError(404, "Qaariga lama helin", "NOT_FOUND");
+  if (!existing) throw new HttpError(404, "Reciter not found", "NOT_FOUND");
 
   deletePublicFile(existing.photoUrl);
   for (const rec of existing.recordings) {
@@ -174,14 +174,14 @@ const juzSchema = z.object({
 
 router.post("/qaaris/:id/juz", upload.single("audio"), async (req, res) => {
   if (!req.file) {
-    throw new HttpError(400, "Faylka codka ayaa loo baahan yahay", "NO_FILE");
+    throw new HttpError(400, "An audio file is required", "NO_FILE");
   }
 
   const { juzNumber } = juzSchema.parse(req.body);
   const qaari = await prisma.qaari.findUnique({ where: { id: param(req.params.id) } });
   if (!qaari) {
     fs.unlinkSync(req.file.path);
-    throw new HttpError(404, "Qaariga lama helin", "NOT_FOUND");
+    throw new HttpError(404, "Reciter not found", "NOT_FOUND");
   }
 
   let durationSeconds: number | null = null;
@@ -222,7 +222,7 @@ router.post("/qaaris/:id/juz", upload.single("audio"), async (req, res) => {
 
 router.delete("/recordings/:id", async (req, res) => {
   const recording = await prisma.recording.findUnique({ where: { id: param(req.params.id) } });
-  if (!recording) throw new HttpError(404, "Dhageysiga lama helin", "NOT_FOUND");
+  if (!recording) throw new HttpError(404, "Recording not found", "NOT_FOUND");
   deletePublicFile(recording.audioUrl);
   await prisma.recording.delete({ where: { id: recording.id } });
   res.status(204).send();

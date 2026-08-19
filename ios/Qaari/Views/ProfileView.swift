@@ -19,24 +19,24 @@ struct ProfileView: View {
                                 Text("\(user.streakCount)")
                                     .font(.largeTitle.bold())
                                     .foregroundStyle(Theme.gold)
-                                Text("maalmood").font(.caption)
+                                Text("days").font(.caption)
                             }
                         }
                     }
                     Section {
-                        Button("Ka bax", role: .destructive) { auth.logout() }
+                        Button("Sign out", role: .destructive) { auth.logout() }
                     }
                 } else {
                     Section {
-                        Text("Marti ayaad tahay. Gal si aad u kaydsato kuwa aad jeceshahay oo aad u raacdo taxanaha maalinlaha ah.")
-                        Button("Gal / Isdiiwaangeli") { auth.requireLogin() }
+                        Text("You are browsing as a guest. Sign in to save favorites and keep a daily streak.")
+                        Button("Sign in / Sign up") { auth.requireLogin() }
                     }
                 }
-                Section("Ku saabsan") {
-                    Text("Wasaaradda Warfaafinta, Dhaqanka iyo Wacyigelinta · Jamhuuriyadda Somaliland")
+                Section("About") {
+                    Text("Ministry of Information, Culture and National Guidance · Republic of Somaliland")
                 }
             }
-            .navigationTitle("Akoonka")
+            .navigationTitle("Account")
         }
     }
 }
