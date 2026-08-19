@@ -1,15 +1,19 @@
-import { useEffect, useState, type DragEvent, type FormEvent } from "react";
+import { useEffect, useRef, useState, type DragEvent, type FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, type Qaari } from "../api";
+
+const MAX_PHOTO_BYTES = 8 * 1024 * 1024;
 
 export default function QaariForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const editing = Boolean(id);
+  const fileRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
   const [photo, setPhoto] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [storedPhoto, setStoredPhoto] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [drag, setDrag] = useState(false);
@@ -20,23 +24,41 @@ export default function QaariForm() {
       setName(qaari.name);
       setBio(qaari.bio);
       setPreview(qaari.photoUrl);
+      setStoredPhoto(qaari.photoUrl);
     });
   }, [id]);
 
-  function setFile(file: File | null) {
+  function applyFile(file: File | null) {
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        setError("Please choose a JPG, PNG, or WEBP photo.");
+        return;
+      }
+      if (file.size > MAX_PHOTO_BYTES) {
+        setError("The photo must be 8 MB or smaller.");
+        return;
+      }
+    }
+    setError("");
+    setPreview((current) => {
+      if (current?.startsWith("blob:")) URL.revokeObjectURL(current);
+      return file ? URL.createObjectURL(file) : storedPhoto;
+    });
     setPhoto(file);
-    if (file) setPreview(URL.createObjectURL(file));
   }
 
   function onDrop(e: DragEvent) {
     e.preventDefault();
     setDrag(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file && file.type.startsWith("image/")) setFile(file);
+    applyFile(e.dataTransfer.files?.[0] ?? null);
   }
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    if (name.trim().length < 2) {
+      setError("Full name must be at least 2 characters.");
+      return;
+    }
     if (bio.trim().length < 10) {
       setError("Biography must be at least 10 characters.");
       return;
@@ -53,7 +75,7 @@ export default function QaariForm() {
         navigate(`/qaaris/${id}`);
       } else {
         const created = await api.createQaari(form);
-        navigate(`/qaaris/${created.qaari.id}`);
+        navigate(`/qaaris/${created.qaari.id}?registered=1`);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -69,72 +91,89 @@ export default function QaariForm() {
       </Link>
       <div className="page-head">
         <div>
-          <p className="step-line">Step 1 of 2 · Profile</p>
+          <ol className="steps" aria-label="Registration steps">
+            <li className="current">1. Profile</li>
+            <li>2. Juz recordings</li>
+          </ol>
           <h2>{editing ? "Edit reciter" : "Register a new reciter"}</h2>
           <p className="lede">
-            This profile is what listeners see in the iOS and Android apps. After saving, you can upload the 30 Juz.
+            Name, short biography, and official photo will appear in the public apps.
           </p>
         </div>
       </div>
 
       <div className="register-layout">
         <form className="card form-page" onSubmit={onSubmit}>
-          <label className={`dropzone ${drag ? "over" : ""} ${preview ? "has-file" : ""}`}>
-            {preview ? (
-              <img src={preview} alt="" />
-            ) : (
-              <div>
-                <strong>Official photo</strong>
-                <p>Drag a JPG, PNG, or WEBP here, or click to browse. Max 8 MB.</p>
-              </div>
-            )}
-            <input
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              hidden
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            />
-            <span
-              className="drop-catch"
-              onDragOver={(e) => {
-                e.preventDefault();
-                setDrag(true);
-              }}
-              onDragLeave={() => setDrag(false)}
-              onDrop={onDrop}
-            />
-          </label>
-          {preview ? (
-            <button type="button" className="btn btn-ghost sm" onClick={() => { setPhoto(null); setPreview(null); }}>
-              Remove photo
-            </button>
-          ) : null}
+          <div className="form-grid">
+            <div className="photo-field">
+              <button
+                type="button"
+                className={`dropzone ${drag ? "over" : ""} ${preview ? "has-file" : ""}`}
+                onClick={() => fileRef.current?.click()}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDrag(true);
+                }}
+                onDragLeave={() => setDrag(false)}
+                onDrop={onDrop}
+              >
+                {preview ? (
+                  <img src={preview} alt="" />
+                ) : (
+                  <div>
+                    <strong>Photo</strong>
+                    <p>JPG, PNG, or WEBP</p>
+                  </div>
+                )}
+              </button>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                hidden
+                onChange={(e) => applyFile(e.target.files?.[0] ?? null)}
+              />
+              <button type="button" className="btn btn-ghost sm" onClick={() => fileRef.current?.click()}>
+                Choose photo
+              </button>
+              {photo ? (
+                <button type="button" className="btn btn-ghost sm" onClick={() => applyFile(null)}>
+                  Remove photo
+                </button>
+              ) : null}
+            </div>
 
-          <label htmlFor="qaari-name">Full name</label>
-          <input
-            id="qaari-name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            minLength={2}
-            placeholder="Example: Sheikh Mohamed Hassan"
-          />
+            <div>
+              <label htmlFor="qaari-name">Full name</label>
+              <input
+                id="qaari-name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                minLength={2}
+                maxLength={120}
+                placeholder="Example: Sheikh Mohamed Hassan"
+              />
 
-          <label htmlFor="qaari-bio">Biography</label>
-          <textarea
-            id="qaari-bio"
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            required
-            minLength={10}
-            maxLength={4000}
-            placeholder="One or two sentences about the reciter, city, and style of recitation."
-          />
-          <p className="char-count">{bio.trim().length} / 4000 · minimum 10 characters</p>
+              <label htmlFor="qaari-bio">Biography</label>
+              <textarea
+                id="qaari-bio"
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                required
+                minLength={10}
+                maxLength={4000}
+                placeholder="One or two sentences about the reciter and their recitation."
+              />
+              <p className={`char-count ${bio.trim().length > 0 && bio.trim().length < 10 ? "warn" : ""}`}>
+                {bio.trim().length} / 4000 · minimum 10 characters
+              </p>
+            </div>
+          </div>
 
           {error ? <div className="error">{error}</div> : null}
 
-          <div className="row">
+          <div className="row form-actions">
             <Link className="btn btn-ghost" to="/qaaris">
               Cancel
             </Link>

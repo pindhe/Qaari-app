@@ -93,6 +93,7 @@ router.get("/qaaris/:id", async (req, res) => {
     where: { id: param(req.params.id) },
     include: {
       recordings: { select: { id: true, juzNumber: true, durationSeconds: true, audioUrl: true } },
+      _count: { select: { favorites: true } },
     },
   });
   if (!qaari) throw new HttpError(404, "Reciter not found", "NOT_FOUND");
@@ -103,6 +104,7 @@ router.get("/qaaris/:id", async (req, res) => {
       bio: qaari.bio,
       photoUrl: qaari.photoUrl,
       uploadedJuzCount: qaari.recordings.length,
+      favoriteCount: qaari._count.favorites,
       createdAt: qaari.createdAt,
       recordings: qaari.recordings.sort((a, b) => a.juzNumber - b.juzNumber),
     },

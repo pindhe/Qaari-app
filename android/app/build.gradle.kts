@@ -16,6 +16,7 @@ android {
         versionCode = 1
         versionName = "1.0.0"
         buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:4000\"")
+        buildConfigField("String", "LAN_API_BASE_URL", "\"http://192.168.1.132:4000\"")
     }
 
     buildTypes {
@@ -46,7 +47,7 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.compose.material:material-icons-core")
     debugImplementation("androidx.compose.ui:ui-tooling")
 
     implementation("androidx.activity:activity-compose:1.9.3")

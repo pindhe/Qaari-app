@@ -51,7 +51,7 @@ object ApiClient {
             "${it.key}=${URLEncoder.encode(it.value, "UTF-8")}"
         }
         val builder = Request.Builder()
-            .url(BuildConfig.API_BASE_URL + path + qs)
+            .url(apiBase + path + qs)
             .header("Accept", "application/json")
         if (token != null) builder.header("Authorization", "Bearer $token")
         when (method) {
@@ -68,8 +68,37 @@ object ApiClient {
                 throw ApiException(message)
             }
             if (text.isBlank()) return decode("{}")
-            return decode(text)
+            return decode(rewriteLocalHosts(text))
         }
+    }
+
+    private val apiBase: String
+        get() {
+            val configured = (if (isEmulator) BuildConfig.API_BASE_URL else BuildConfig.LAN_API_BASE_URL).trimEnd('/')
+            return configured
+        }
+
+    private val isEmulator: Boolean
+        get() {
+            val fingerprint = android.os.Build.FINGERPRINT
+            val model = android.os.Build.MODEL
+            val hardware = android.os.Build.HARDWARE
+            val product = android.os.Build.PRODUCT
+            return fingerprint.startsWith("generic")
+                || model.contains("Emulator", ignoreCase = true)
+                || model.contains("Android SDK", ignoreCase = true)
+                || hardware.contains("goldfish")
+                || hardware.contains("ranchu")
+                || product.contains("sdk", ignoreCase = true)
+                || product.contains("emulator", ignoreCase = true)
+        }
+
+    private fun rewriteLocalHosts(text: String): String {
+        val base = apiBase
+        return text
+            .replace("http://localhost:4000", base)
+            .replace("http://127.0.0.1:4000", base)
+            .replace("http://10.0.2.2:4000", base)
     }
 
     val format: Json get() = json

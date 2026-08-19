@@ -21,6 +21,7 @@ export type Qaari = {
   bio: string;
   photoUrl: string | null;
   uploadedJuzCount: number;
+  favoriteCount?: number;
   createdAt?: string;
   recordings?: Recording[];
 };
