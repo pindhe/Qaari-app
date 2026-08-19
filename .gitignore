@@ -16,6 +16,15 @@ build/
 # Uploads (audio & photos)
 backend/uploads/
 
+# Local PostgreSQL data directory
+.pgdata/
+
+# Local SQLite database
+backend/dev.db
+backend/dev.db-journal
+backend/prisma/dev.db
+backend/prisma/*.db
+
 # OS / IDE
 .DS_Store
 Thumbs.db

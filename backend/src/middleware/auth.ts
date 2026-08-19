@@ -8,7 +8,7 @@ export type AuthedRequest = Request & { user?: User };
 export async function requireAuth(req: AuthedRequest, res: Response, next: NextFunction) {
   const header = req.headers.authorization;
   if (!header?.startsWith("Bearer ")) {
-    res.status(401).json({ error: "Gal si aad u sii wadato", code: "UNAUTHENTICATED" });
+    res.status(401).json({ error: "Sign in to continue", code: "UNAUTHENTICATED" });
     return;
   }
 
@@ -16,19 +16,19 @@ export async function requireAuth(req: AuthedRequest, res: Response, next: NextF
     const payload = verifyToken(header.slice(7));
     const user = await prisma.user.findUnique({ where: { id: payload.sub } });
     if (!user) {
-      res.status(401).json({ error: "Akoonka lama helin", code: "UNAUTHENTICATED" });
+      res.status(401).json({ error: "Account not found", code: "UNAUTHENTICATED" });
       return;
     }
     req.user = user;
     next();
   } catch {
-    res.status(401).json({ error: "Fadlan mar kale gal", code: "UNAUTHENTICATED" });
+    res.status(401).json({ error: "Please sign in again", code: "UNAUTHENTICATED" });
   }
 }
 
 export function requireAdmin(req: AuthedRequest, res: Response, next: NextFunction) {
   if (!req.user || req.user.role !== "admin") {
-    res.status(403).json({ error: "Ma lihid oggolaansho maamule", code: "FORBIDDEN" });
+    res.status(403).json({ error: "You do not have admin access", code: "FORBIDDEN" });
     return;
   }
   next();

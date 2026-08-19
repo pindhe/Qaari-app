@@ -9,6 +9,7 @@ import { config } from "../config.js";
 import { deletePublicFile, publicUrl, uploadsRoot } from "../lib/storage.js";
 import { requireAdmin, requireAuth, type AuthedRequest } from "../middleware/auth.js";
 import { HttpError } from "../middleware/error.js";
+import { param } from "../lib/params.js";
 
 const router = Router();
 router.use(requireAuth, requireAdmin);
@@ -81,8 +82,30 @@ router.get("/qaaris", async (_req, res) => {
       bio: q.bio,
       photoUrl: q.photoUrl,
       uploadedJuzCount: q.recordings.length,
+      createdAt: q.createdAt,
       recordings: q.recordings.sort((a, b) => a.juzNumber - b.juzNumber),
     })),
+  });
+});
+
+router.get("/qaaris/:id", async (req, res) => {
+  const qaari = await prisma.qaari.findUnique({
+    where: { id: param(req.params.id) },
+    include: {
+      recordings: { select: { id: true, juzNumber: true, durationSeconds: true, audioUrl: true } },
+    },
+  });
+  if (!qaari) throw new HttpError(404, "Qaariga lama helin", "NOT_FOUND");
+  res.json({
+    qaari: {
+      id: qaari.id,
+      name: qaari.name,
+      bio: qaari.bio,
+      photoUrl: qaari.photoUrl,
+      uploadedJuzCount: qaari.recordings.length,
+      createdAt: qaari.createdAt,
+      recordings: qaari.recordings.sort((a, b) => a.juzNumber - b.juzNumber),
+    },
   });
 });
 
@@ -105,7 +128,7 @@ router.post("/qaaris", upload.single("photo"), async (req: AuthedRequest, res) =
 });
 
 router.put("/qaaris/:id", upload.single("photo"), async (req, res) => {
-  const existing = await prisma.qaari.findUnique({ where: { id: req.params.id } });
+  const existing = await prisma.qaari.findUnique({ where: { id: param(req.params.id) } });
   if (!existing) throw new HttpError(404, "Qaariga lama helin", "NOT_FOUND");
 
   const body = qaariBody.parse({
@@ -131,7 +154,7 @@ router.put("/qaaris/:id", upload.single("photo"), async (req, res) => {
 
 router.delete("/qaaris/:id", async (req, res) => {
   const existing = await prisma.qaari.findUnique({
-    where: { id: req.params.id },
+    where: { id: param(req.params.id) },
     include: { recordings: true },
   });
   if (!existing) throw new HttpError(404, "Qaariga lama helin", "NOT_FOUND");
@@ -155,7 +178,7 @@ router.post("/qaaris/:id/juz", upload.single("audio"), async (req, res) => {
   }
 
   const { juzNumber } = juzSchema.parse(req.body);
-  const qaari = await prisma.qaari.findUnique({ where: { id: req.params.id } });
+  const qaari = await prisma.qaari.findUnique({ where: { id: param(req.params.id) } });
   if (!qaari) {
     fs.unlinkSync(req.file.path);
     throw new HttpError(404, "Qaariga lama helin", "NOT_FOUND");
@@ -198,7 +221,7 @@ router.post("/qaaris/:id/juz", upload.single("audio"), async (req, res) => {
 });
 
 router.delete("/recordings/:id", async (req, res) => {
-  const recording = await prisma.recording.findUnique({ where: { id: req.params.id } });
+  const recording = await prisma.recording.findUnique({ where: { id: param(req.params.id) } });
   if (!recording) throw new HttpError(404, "Dhageysiga lama helin", "NOT_FOUND");
   deletePublicFile(recording.audioUrl);
   await prisma.recording.delete({ where: { id: recording.id } });
@@ -226,12 +249,20 @@ router.get("/stats", async (_req, res) => {
   });
   const nameById = new Map(qaariNames.map((q) => [q.id, q.name]));
 
+  const qaarisWithCounts = await prisma.qaari.findMany({
+    include: { _count: { select: { recordings: true } } },
+  });
+  const completeCount = qaarisWithCounts.filter((q) => q._count.recordings >= 30).length;
+  const pendingJuz = Math.max(0, qaariCount * 30 - recordingCount);
+
   res.json({
     stats: {
       userCount,
       qaariCount,
       recordingCount,
       favoriteCount,
+      completeCount,
+      pendingJuz,
       mostFavorited: topQaaris.map((t) => ({
         qaariId: t.qaariId,
         name: nameById.get(t.qaariId) ?? "—",

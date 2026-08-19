@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -20,7 +20,7 @@ model User {
   passwordHash  String      @map("password_hash")
   role          Role        @default(user)
   streakCount   Int         @default(0) @map("streak_count")
-  lastLoginDate DateTime?   @map("last_login_date") @db.Date
+  lastLoginDate DateTime?   @map("last_login_date")
   createdAt     DateTime    @default(now()) @map("created_at")
   updatedAt     DateTime    @updatedAt @map("updated_at")
   qaarisCreated Qaari[]     @relation("CreatedBy")
@@ -32,7 +32,7 @@ model User {
 model Qaari {
   id          String      @id @default(cuid())
   name        String
-  bio         String      @db.Text
+  bio         String
   photoUrl    String?     @map("photo_url")
   createdById String      @map("created_by")
   createdBy   User        @relation("CreatedBy", fields: [createdById], references: [id])

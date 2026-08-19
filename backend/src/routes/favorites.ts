@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
 import { requireAuth, type AuthedRequest } from "../middleware/auth.js";
 import { HttpError } from "../middleware/error.js";
+import { param } from "../lib/params.js";
 
 const router = Router();
 
@@ -99,7 +100,7 @@ router.post("/", async (req: AuthedRequest, res) => {
 });
 
 router.delete("/:id", async (req: AuthedRequest, res) => {
-  const favorite = await prisma.favorite.findUnique({ where: { id: req.params.id } });
+  const favorite = await prisma.favorite.findUnique({ where: { id: param(req.params.id) } });
   if (!favorite || favorite.userId !== req.user!.id) {
     throw new HttpError(404, "Ma jiro wax la jecelyahay", "NOT_FOUND");
   }

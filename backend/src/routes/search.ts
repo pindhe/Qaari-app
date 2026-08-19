@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
 
   const qaaris = await prisma.qaari.findMany({
     where: {
-      name: { contains: q, mode: "insensitive" },
+      name: { contains: q },
     },
     orderBy: { name: "asc" },
     take: 30,

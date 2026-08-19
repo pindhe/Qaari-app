@@ -20,7 +20,7 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
 
   if (err instanceof ZodError) {
     res.status(400).json({
-      error: "Xogta lama aqbalin",
+      error: "Invalid input",
       code: "VALIDATION",
       details: err.flatten(),
     });
@@ -30,7 +30,7 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
   if (err instanceof multer.MulterError) {
     const message =
       err.code === "LIMIT_FILE_SIZE"
-        ? "Faylka aad soo gelisay waa weyn yahay"
+        ? "The file is too large"
         : err.message;
     res.status(400).json({ error: message, code: err.code });
     return;

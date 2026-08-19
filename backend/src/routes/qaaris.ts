@@ -2,6 +2,7 @@ import { Router } from "express";
 import { prisma } from "../lib/prisma.js";
 import { HttpError } from "../middleware/error.js";
 import { optionalAuth, type AuthedRequest } from "../middleware/auth.js";
+import { param } from "../lib/params.js";
 
 const router = Router();
 
@@ -73,7 +74,7 @@ router.get("/", optionalAuth, async (req: AuthedRequest, res) => {
 
 router.get("/:id", optionalAuth, async (req: AuthedRequest, res) => {
   const qaari = await prisma.qaari.findUnique({
-    where: { id: req.params.id },
+    where: { id: param(req.params.id) },
     include: {
       recordings: { select: { id: true, juzNumber: true, durationSeconds: true, audioUrl: true } },
     },
@@ -96,7 +97,7 @@ router.get("/:id", optionalAuth, async (req: AuthedRequest, res) => {
 });
 
 router.get("/:id/juz/:number", async (req, res) => {
-  const number = Number(req.params.number);
+  const number = Number(param(req.params.number));
   if (!Number.isInteger(number) || number < 1 || number > 30) {
     throw new HttpError(400, "Lambarka Juz waa inuu noqdaa 1 ilaa 30", "INVALID_JUZ");
   }
@@ -104,7 +105,7 @@ router.get("/:id/juz/:number", async (req, res) => {
   const recording = await prisma.recording.findUnique({
     where: {
       qaariId_juzNumber: {
-        qaariId: req.params.id,
+        qaariId: param(req.params.id),
         juzNumber: number,
       },
     },

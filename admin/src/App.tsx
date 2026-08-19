@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { getToken } from "./api";
+import Shell from "./layout/Shell";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import QaariForm from "./pages/QaariForm";
@@ -16,37 +17,17 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route
-        path="/"
         element={
           <Guard>
-            <Dashboard />
+            <Shell />
           </Guard>
         }
-      />
-      <Route
-        path="/qaaris/new"
-        element={
-          <Guard>
-            <QaariForm />
-          </Guard>
-        }
-      />
-      <Route
-        path="/qaaris/:id"
-        element={
-          <Guard>
-            <QaariDetail />
-          </Guard>
-        }
-      />
-      <Route
-        path="/qaaris/:id/edit"
-        element={
-          <Guard>
-            <QaariForm />
-          </Guard>
-        }
-      />
+      >
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/qaaris/new" element={<QaariForm />} />
+        <Route path="/qaaris/:id" element={<QaariDetail />} />
+        <Route path="/qaaris/:id/edit" element={<QaariForm />} />
+      </Route>
     </Routes>
   );
 }
