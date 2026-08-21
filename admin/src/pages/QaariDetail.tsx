@@ -229,7 +229,7 @@ export default function QaariDetail() {
             <p className="kicker left">Official reciter</p>
             <span className={`badge ${st.cls}`}>{st.label}</span>
           </div>
-          <p className="lede">{qaari.bio}</p>
+          <p className="lede reciter-bio">{qaari.bio}</p>
           <div className="progress-cell wide">
             <div className="progress lg">
               <i style={{ width: `${pct}%` }} />

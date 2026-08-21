@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getStoredUser, setSession } from "../api";
+import BrandLogo from "../components/BrandLogo";
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -30,7 +31,13 @@ export default function Settings() {
 
       <div className="workspace">
         <section className="card form-page">
-          <h3>Staff account</h3>
+          <div className="brand-row">
+            <BrandLogo variant="on-light" className="settings-logo" />
+            <div>
+              <h3>Staff account</h3>
+              <p className="meta">Qaari admin · Ministry of Information</p>
+            </div>
+          </div>
           <label>Display name</label>
           <input value={user?.name ?? ""} readOnly />
           <label>Official email</label>
@@ -43,7 +50,10 @@ export default function Settings() {
           </button>
         </section>
 
-        <aside className="card side-panel">
+        <aside className="card side-panel settings-system">
+          <div className="settings-system-mark">
+            <BrandLogo variant="on-dark" className="settings-logo-dark" />
+          </div>
           <h3>System</h3>
           <p>
             <strong>Language:</strong> English

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type DragEvent, type FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, type Qaari } from "../api";
+import BrandLogo from "../components/BrandLogo";
 
 const MAX_PHOTO_BYTES = 8 * 1024 * 1024;
 
@@ -187,12 +188,28 @@ export default function QaariForm() {
           <p className="kicker left">App preview</p>
           <h3>How listeners will see this</h3>
           <div className="phone">
-            <div className="phone-photo">
-              {preview ? <img src={preview} alt="" /> : <span>{name.trim().slice(0, 1) || "Q"}</span>}
+            <div className="phone-hero">
+              <div className="phone-photo">
+                {preview ? (
+                  <img src={preview} alt="" />
+                ) : (
+                  <BrandLogo variant="on-dark" className="phone-fallback" alt="" />
+                )}
+              </div>
+              <div className="phone-copy">
+                <strong>{name.trim() || "Reciter name"}</strong>
+                <p>{bio.trim() || "Biography will appear here."}</p>
+              </div>
             </div>
-            <strong>{name.trim() || "Reciter name"}</strong>
-            <p>{bio.trim() || "Biography will appear here."}</p>
-            <div className="phone-juz">Juz 1–30 will list here after upload</div>
+            <div className="phone-juz-list" aria-hidden="true">
+              {[1, 2, 3].map((n) => (
+                <div key={n} className="phone-juz-row">
+                  <span>Juz {n}</span>
+                  <span>Not uploaded yet</span>
+                </div>
+              ))}
+              <div className="phone-juz">Juz 1–30 will list here after upload</div>
+            </div>
           </div>
         </aside>
       </div>

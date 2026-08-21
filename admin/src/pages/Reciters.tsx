@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api, type Qaari } from "../api";
 import { statusOf } from "../lib/status";
+import BrandLogo from "../components/BrandLogo";
 
 export default function Reciters() {
   const navigate = useNavigate();
@@ -73,6 +74,7 @@ export default function Reciters() {
 
         {filtered.length === 0 && !loading ? (
           <div className="empty">
+            <BrandLogo variant="on-light" className="empty-logo" />
             <strong>No reciters registered yet</strong>
             <p>Add a Qaari so they appear in the mobile apps.</p>
             <Link className="btn btn-primary inline" to="/qaaris/new">

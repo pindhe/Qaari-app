@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api, type Qaari, type Stats } from "../api";
 import { statusOf } from "../lib/status";
+import BrandLogo from "../components/BrandLogo";
 
 export default function Reports() {
   const [stats, setStats] = useState<Stats | null>(null);
@@ -58,10 +59,13 @@ export default function Reports() {
 
       <section className="card report-sheet">
         <header className="report-head">
-          <div>
-            <p className="kicker left">Ministry of Information</p>
-            <h3>Qaari library status report</h3>
-            <p className="meta">Generated {generated}</p>
+          <div className="report-brand">
+            <BrandLogo variant="on-light" className="report-logo" />
+            <div>
+              <p className="kicker left">Ministry of Information</p>
+              <h3>Qaari library status report</h3>
+              <p className="meta">Generated {generated}</p>
+            </div>
           </div>
           <div className="report-summary">
             <div>

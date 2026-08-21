@@ -1,23 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, setSession } from "../api";
-
-function Emblem() {
-  return (
-    <svg className="emblem" viewBox="0 0 88 88" aria-hidden="true">
-      <circle cx="44" cy="44" r="42" fill="#063820" />
-      <circle cx="44" cy="44" r="36" fill="#0b7a3e" />
-      <rect x="14" y="28" width="60" height="10" fill="#0b7a3e" />
-      <rect x="14" y="38" width="60" height="12" fill="#ffffff" />
-      <rect x="14" y="50" width="60" height="10" fill="#c8102e" />
-      <polygon
-        points="44,32 46.4,39.5 54.2,39.5 47.9,44.1 50.3,51.6 44,47 37.7,51.6 40.1,44.1 33.8,39.5 41.6,39.5"
-        fill="#111"
-      />
-      <circle cx="44" cy="44" r="36" fill="none" stroke="#c9a227" strokeWidth="2.2" />
-    </svg>
-  );
-}
+import BrandLogo from "../components/BrandLogo";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -47,8 +31,9 @@ export default function Login() {
       <div className="flag-bar" />
       <div className="login-split">
         <section className="login-brand" aria-label="Ministry">
+          <BrandLogo variant="on-dark" className="login-watermark" alt="" aria-hidden="true" />
           <div className="login-brand-inner">
-            <Emblem />
+            <BrandLogo variant="on-dark" className="emblem" />
             <p className="login-gov">Republic of Somaliland</p>
             <h1>Qaari</h1>
             <p className="login-ministry">
@@ -67,6 +52,7 @@ export default function Login() {
 
         <section className="login-panel">
           <form className="login-form" onSubmit={onSubmit}>
+            <BrandLogo variant="on-light" className="login-form-logo" />
             <p className="kicker left">Staff access</p>
             <h2>Sign in to the admin panel</h2>
             <p className="lede">

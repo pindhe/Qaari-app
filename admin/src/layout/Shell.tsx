@@ -1,28 +1,12 @@
 import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { getStoredUser, setSession } from "../api";
+import BrandLogo from "../components/BrandLogo";
 
 function Icon({ d }: { d: string }) {
   return (
     <svg className="nav-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d={d} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function Emblem() {
-  return (
-    <svg className="side-emblem" viewBox="0 0 88 88" aria-hidden="true">
-      <circle cx="44" cy="44" r="42" fill="#042616" />
-      <circle cx="44" cy="44" r="36" fill="#0b7a3e" />
-      <rect x="14" y="28" width="60" height="10" fill="#0b7a3e" />
-      <rect x="14" y="38" width="60" height="12" fill="#ffffff" />
-      <rect x="14" y="50" width="60" height="10" fill="#c8102e" />
-      <polygon
-        points="44,32 46.4,39.5 54.2,39.5 47.9,44.1 50.3,51.6 44,47 37.7,51.6 40.1,44.1 33.8,39.5 41.6,39.5"
-        fill="#111"
-      />
-      <circle cx="44" cy="44" r="36" fill="none" stroke="#c9a227" strokeWidth="2.2" />
     </svg>
   );
 }
@@ -54,7 +38,7 @@ export default function Shell() {
       {open ? <button type="button" className="sidebar-backdrop" aria-label="Close menu" onClick={() => setOpen(false)} /> : null}
       <aside className={`sidebar ${open ? "open" : ""}`}>
         <div className="brand">
-          <Emblem />
+          <BrandLogo variant="on-dark" className="side-emblem" />
           <div>
             <div className="brand-mark">Qaari</div>
             <div className="brand-sub">Ministry of Information</div>
@@ -119,6 +103,7 @@ export default function Shell() {
           <button type="button" className="menu-btn" onClick={() => setOpen(true)} aria-label="Menu">
             ☰
           </button>
+          <BrandLogo variant="on-light" className="header-logo" />
           <div>
             <p className="kicker left">Republic of Somaliland</p>
             <h1 className="header-title">Official Recitation Library</h1>
